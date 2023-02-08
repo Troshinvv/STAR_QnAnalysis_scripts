@@ -1,0 +1,154 @@
+axes:
+  - &centrality
+    name: RecoEventExt_centrality
+    bin-edges: [ 0, 5, 10, 20,30,40,50,60,70,80]
+
+_detectors: &detectors
+  - name: protonW
+    tags: [proton]
+  - name: pionW
+    tags: [pion]
+  - name: protonE
+    tags: [proton]
+  - name: pionE
+    tags: [pion]
+  - name: kaonW
+    tags: [kaon]
+  - name: kaonE
+    tags: [kaon]
+  - name: hadronsW
+    tags: [hadrons]
+  - name: hadronsE
+    tags: [hadrons]
+
+  - name: hadronsWv
+    tags: [hadronsv]
+  - name: hadronsEv
+    tags: [hadronsv]
+
+  - name: bbcWest
+    tags: [reference]
+  - name: bbcEast
+    tags: [reference]
+_components:
+  - &cos1sin1
+    [cos1, sin1]
+  - &cos2sin2
+    [cos2, sin2]
+  - &x1y1
+    [x1, y1]
+  - &x2y2
+    [x2, y2]
+
+_tasks_args:
+  - &ta_proton
+    query: { tags: {any-in: [ proton ] } }
+    query-list: *detectors
+    components: *x1y1
+    correction-steps: [recentered]
+    weight: sumw
+
+  - &ta_pion
+    query: { tags: {any-in: [ pion ] } }
+    query-list: *detectors
+    components: *x1y1
+    correction-steps: [recentered]
+    weight: sumw
+  - &ta2_proton
+    query: { tags: {any-in: [ proton ] } }
+    query-list: *detectors
+    components: *x2y2
+    correction-steps: [recentered]
+    weight: sumw
+
+  - &ta2_pion
+    query: { tags: {any-in: [ pion ] } }
+    query-list: *detectors
+    components: *x2y2
+    correction-steps: [recentered]
+    weight: sumw
+  - &ta2_kaon
+    query: { tags: {any-in: [ kaon ] } }
+    query-list: *detectors
+    components: *x2y2
+    correction-steps: [recentered]
+    weight: sumw
+
+  - &ta2_hadrons
+    query: { tags: {any-in: [ hadrons ] } }
+    query-list: *detectors
+    components: *x2y2
+    correction-steps: [recentered]
+    weight: ones
+
+  - &ta2_hadronsv
+    query: { tags: {any-in: [ hadronsv ] } }
+    query-list: *detectors
+    components: *x2y2
+    correction-steps: [recentered]
+    weight: sumw
+
+  - &ta_Ur
+    query: { tags: { any-in: [ reference ] } }
+    query-list: *detectors
+    components: *x1y1
+    correction-steps: [ recentered]
+    weight: ones
+
+
+_tasks:
+  - args: [ *ta_proton, *ta_Ur ]
+    n-samples: 50
+    weights-type: observable
+    folder: "/uQ"
+    axes: 
+      - *centrality
+  - args: [ *ta_pion, *ta_Ur ]
+    n-samples: 50
+    weights-type: observable
+    folder: "/uQ"
+    axes: 
+      - *centrality 
+  - args: [ *ta_Ur, *ta_Ur ]
+    n-samples: 50
+    weights-type: reference
+    folder: "/QQ"
+    axes: 
+      - *centrality
+  
+  - args: [ *ta2_proton, *ta2_hadrons ]
+    n-samples: 50
+    weights-type: observable
+    folder: "/uQ"
+    axes: 
+      - *centrality
+
+  - args: [ *ta2_hadronsv, *ta2_hadrons ]
+    n-samples: 50
+    weights-type: observable
+    folder: "/uQ"
+    axes: 
+      - *centrality
+
+  - args: [ *ta2_pion, *ta2_hadrons ]
+    n-samples: 50
+    weights-type: observable
+    folder: "/uQ"
+    axes: 
+      - *centrality 
+  - args: [ *ta2_kaon, *ta2_hadrons ]
+    n-samples: 50
+    weights-type: observable
+    folder: "/uQ"
+    axes: 
+      - *centrality 
+  - args: [ *ta2_hadrons, *ta2_hadrons ]
+    n-samples: 50
+    weights-type: reference
+    folder: "/QQ"
+    axes: 
+      - *centrality
+
+
+
+
